@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "default_monitor": ["qwen38", "sglang"],
+  "models": [
+    {
+      "name": "qwen38",
+      "engine": "sglang",
+      "description": "Qwen 3.8 27B / SGLang (configure your model and service first)",
+      "variables": {"model_dir": "${home}/models/Qwen3.8-27B-AWQ"},
+      "commands": {
+        "start": ["systemctl", "--user", "start", "sglang-qwen.service"],
+        "stop": ["systemctl", "--user", "stop", "sglang-qwen.service"],
+        "restart": ["systemctl", "--user", "restart", "sglang-qwen.service"],
+        "status": ["systemctl", "--user", "status", "sglang-qwen.service", "--no-pager"]
+      },
+      "paths": {
+        "model": "${model_dir}",
+        "model_config": "${model_dir}/config.json",
+        "service": "${home}/.config/systemd/user/sglang-qwen.service"
+      },
+      "api": {"base_url": "http://127.0.0.1:30001/v1"},
+      "logs": {"type": "file", "path": "${home}/.local/state/sglang-qwen.log"},
+      "monitor": {"type": "sglang-log", "path": "${home}/.local/state/sglang-qwen.log", "stale_after": 15}
+    }
+  ],
+  "services": [
+    {
+      "name": "webui",
+      "aliases": ["open-webui"],
+      "commands": {
+        "start": ["systemctl", "--user", "start", "open-webui.service"],
+        "stop": ["systemctl", "--user", "stop", "open-webui.service"],
+        "status": ["systemctl", "--user", "status", "open-webui.service", "--no-pager"]
+      },
+      "paths": {"service": "${home}/.config/systemd/user/open-webui.service"},
+      "logs": {"type": "journal", "unit": "open-webui.service"}
+    }
+  ],
+  "downloads": [],
+  "web": [{"name": "Open WebUI", "url": "http://127.0.0.1:3000/"}]
+}

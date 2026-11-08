@@ -1,0 +1,15 @@
+[Unit]
+Description=SGLang Qwen model server
+After=network.target
+
+[Service]
+# Adapt this interpreter, model, quantization and memory settings to your GPU.
+ExecStart=%h/.venvs/sglang/bin/python -m sglang.launch_server --model-path %h/models/Qwen3.8-27B-AWQ --served-model-name qwen3.8-27b-awq --host 127.0.0.1 --port 30001 --context-length 8192
+StandardOutput=append:%h/.local/state/sglang-qwen.log
+StandardError=append:%h/.local/state/sglang-qwen.log
+KillSignal=SIGINT
+TimeoutStopSec=30
+Restart=no
+
+[Install]
+WantedBy=default.target
